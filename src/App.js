@@ -1,13 +1,16 @@
 import React from 'react';
-
-import 'antd/dist/antd.css';
 import Search from './search/container/Search';
+
+import 'antd/dist/antd.css'; // antd css
+import { BrowserRouter, Route } from 'react-router-dom';
+import User from './user/container/User';
 
 function App() {
   return (
-    <>
-      <Search />
-    </>
+    <BrowserRouter>
+      <Route exact path='/' component={Search} />
+      <Route path='/user/:name' component={User} />
+    </BrowserRouter>
   );
 }
 

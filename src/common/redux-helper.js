@@ -5,7 +5,7 @@ export function createReducer(initialState, handlerMap) {
     const handler = handlerMap[action.type];
     if (handler) {
       return produce(state, (draft) => {
-        const handler = handlerMap[action.type];
+        // const handler = handlerMap[action.type];
         handler(draft, action);
       });
     } else {
