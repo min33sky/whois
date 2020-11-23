@@ -1,6 +1,7 @@
 import { all, call, put, takeEvery } from 'redux-saga/effects';
 import { actions, Types } from './index';
 import { callApi } from './../../common/util/api';
+import { makeFetchSaga } from './../../common/util/fetch';
 
 /**
  *
@@ -20,5 +21,10 @@ function* fetchAutoCompletes({ keyword }) {
 }
 
 export default function* searchSaga() {
-  yield all([takeEvery(Types.FetchAutoCompletes, fetchAutoCompletes)]);
+  yield all([
+    takeEvery(
+      Types.FetchAutoCompletes,
+      makeFetchSaga({ fetchSaga: fetchAutoCompletes, canCache: true }),
+    ),
+  ]);
 }

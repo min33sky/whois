@@ -1,6 +1,7 @@
 import { all, takeEvery, call, put } from 'redux-saga/effects';
 import { actions, Types } from './index';
 import { callApi } from './../../common/util/api';
+import { makeFetchSaga } from './../../common/util/fetch';
 
 /**
  *
@@ -25,5 +26,13 @@ function* fetchUser({ name }) {
 }
 
 export default function* userSaga() {
-  yield all([takeEvery(Types.FetchUser, fetchUser)]);
+  yield all([
+    takeEvery(
+      Types.FetchUser,
+      makeFetchSaga({
+        fetchSaga: fetchUser,
+        canCache: true,
+      }),
+    ),
+  ]);
 }

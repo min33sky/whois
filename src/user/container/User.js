@@ -1,4 +1,4 @@
-import { Col, Descriptions, PageHeader, Row, Typography } from 'antd';
+import { Col, Descriptions, PageHeader, Row, Space, Spin, Typography } from 'antd';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -8,12 +8,13 @@ import { actions } from '../state';
  *
  * @param {object} param
  * @param {import('react-router-dom').match} param.match match
- */
+ */ import useFetchInfo from './../../common/hooks/useFetchInfo';
+import { Types } from './../state/index';
+
 export default function User({ match }) {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  // @ts-ignore
   const user = useSelector((state) => state.user.user);
   const name = match.params.name;
 
@@ -21,12 +22,20 @@ export default function User({ match }) {
     dispatch(actions.fetchUser(name));
   }, [dispatch, name]);
 
-  const isFetched = true;
+  const { isFetched, isSlow } = useFetchInfo(Types.FetchUser);
 
   return (
     <Row justify='center'>
       <Col xs={24} md={20} lg={14}>
-        <PageHeader onBack={history.goBack} title='사용자 정보'>
+        <PageHeader
+          onBack={history.goBack}
+          title={
+            <Space>
+              사용자 정보
+              {isSlow && <Spin size='small' />}
+            </Space>
+          }
+        >
           {user && (
             <Descriptions layout='vertical' column={1} bordered>
               <Descriptions.Item label='이름'>
