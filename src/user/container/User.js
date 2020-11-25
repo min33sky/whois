@@ -2,15 +2,18 @@ import { Col, Descriptions, PageHeader, Row, Space, Spin, Typography } from 'ant
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import History from '../../common/components/History';
 import { actions } from '../state';
+import useFetchInfo from './../../common/hooks/useFetchInfo';
+import { Types } from './../state/index';
+import Department from './Department';
+import TagList from './TagList';
 
 /**
  *
  * @param {object} param
  * @param {import('react-router-dom').match} param.match match
- */ import useFetchInfo from './../../common/hooks/useFetchInfo';
-import { Types } from './../state/index';
-
+ */
 export default function User({ match }) {
   const history = useHistory();
   const dispatch = useDispatch();
@@ -22,6 +25,7 @@ export default function User({ match }) {
     dispatch(actions.fetchUser(name));
   }, [dispatch, name]);
 
+  // const { isFetched, isSlow } = useFetchInfo(Types.FetchUser, name);
   const { isFetched, isSlow } = useFetchInfo(Types.FetchUser);
 
   return (
@@ -41,9 +45,15 @@ export default function User({ match }) {
               <Descriptions.Item label='이름'>
                 <Typography.Text>{user.name}</Typography.Text>
               </Descriptions.Item>
-              <Descriptions.Item label='소속'>{user.department}</Descriptions.Item>
-              <Descriptions.Item label='태그'>{user.tag}</Descriptions.Item>
-              <Descriptions.Item label='수정내역'>수정내역</Descriptions.Item>
+              <Descriptions.Item label='소속'>
+                <Department />
+              </Descriptions.Item>
+              <Descriptions.Item label='태그'>
+                <TagList />
+              </Descriptions.Item>
+              <Descriptions.Item label='수정내역'>
+                <History />
+              </Descriptions.Item>
             </Descriptions>
           )}
           {!user && isFetched && <Typography.Text>존재하지 않는 사용자 입니다.</Typography.Text>}

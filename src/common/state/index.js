@@ -15,7 +15,7 @@ export const actions = {
 
 const INITIAL_STATE = {
   fetchInfo: {
-    fetchStatusMap: {},
+    fetchStatusMap: {}, // API 요청 상태
     isSlowMap: {},
     totalCountMap: {},
     errorMessageMap: {},
@@ -24,6 +24,7 @@ const INITIAL_STATE = {
 };
 const reducer = createReducer(INITIAL_STATE, {
   [Types.SetValue]: setValueReducer,
+
   [Types.SetFetchStatus]: (state, action) => {
     const { actionType, fetchKey, status, totalCount, nextPage, errorMessage } = action.payload;
     if (!state.fetchInfo.fetchStatusMap[actionType]) {
@@ -31,30 +32,36 @@ const reducer = createReducer(INITIAL_STATE, {
     }
     state.fetchInfo.fetchStatusMap[actionType][fetchKey] = status;
 
+    //* Success or Fail일때 Fetch 관련 상태 변경
     if (status !== FetchStatus.Request) {
       if (state.fetchInfo.isSlowMap[actionType]) {
         state.fetchInfo.isSlowMap[actionType][fetchKey] = false;
       }
+
       if (totalCount !== undefined) {
         if (!state.fetchInfo.totalCountMap[actionType]) {
           state.fetchInfo.totalCountMap[actionType] = {};
         }
         state.fetchInfo.totalCountMap[actionType][fetchKey] = totalCount;
       }
+
       if (nextPage !== undefined) {
         if (!state.fetchInfo.nextPageMap[actionType]) {
           state.fetchInfo.nextPageMap[actionType] = {};
         }
         state.fetchInfo.nextPageMap[actionType][fetchKey] = nextPage;
       }
+
       if (!state.fetchInfo.errorMessageMap[actionType]) {
         state.fetchInfo.errorMessageMap[actionType] = {};
       }
+
       if (errorMessage) {
         state.fetchInfo.errorMessageMap[actionType][fetchKey] = errorMessage;
       }
     }
   },
+
   [Types.SetIsSlow]: (state, action) => {
     const { actionType, fetchKey, isSlow } = action.payload;
     if (!state.fetchInfo.isSlowMap[actionType]) {

@@ -10,12 +10,16 @@ import { makeFetchSaga } from './../../common/util/fetch';
  * @param {string} param.keyword 키워드
  */
 function* fetchAutoCompletes({ keyword }) {
+  console.log('call 요청');
   const { isSuccess, data } = yield call(callApi, {
     url: '/user/search',
     params: { keyword },
   });
 
+  console.log('###########################################################');
+
   if (isSuccess && data) {
+    console.log('put 요청');
     yield put(actions.setValue('autoCompletes', data));
   }
 }
