@@ -5,16 +5,26 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 
 const app = express();
+
 app.use(
   cors({
-    origin: 'http://localhost:3000',
-    credentials: true,
+    origin: 'http://localhost:3000', // 프론트 URL
+    credentials: true, // 쿠키를 같이 보낸다.
   }),
 );
+
 app.use(bodyParser.json());
 app.use(cookieParser());
 
 const db = new sqlite3.Database('./data.db', sqlite3.OPEN_READWRITE);
+
+// ------------------------------------------------ Router ---------------------------------------------------//
+
+/**
+ * 유저 검색
+ * 이름, 부서, 태그 키워드에 일치하는 유저들을 반환하는 API
+ * GET /user/search?keyword=
+ */
 app.get('/user/search', (req, res) => {
   setTimeout(() => {
     const keyword = req.query.keyword;
@@ -51,6 +61,11 @@ app.get('/history', (req, res) => {
   }, 1);
 });
 
+/**
+ * 유저 정보 수정
+ *
+ * POST /user/update
+ */
 app.post('/user/update', (req, res) => {
   setTimeout(() => {
     const { key, name, value, oldValue } = req.body;
@@ -72,6 +87,7 @@ app.post('/user/update', (req, res) => {
         after: value,
         date: dateStr,
       };
+
       const sql = `INSERT INTO history(editor, name, column, before, after, date) VALUES (?,?,?,?,?,?)`;
       db.run(
         sql,
@@ -95,6 +111,11 @@ app.get('/auth/user', (req, res) => {
   }, 1);
 });
 
+/**
+ * 로그인
+ *
+ * POST /auth/login
+ */
 app.post('/auth/login', (req, res) => {
   setTimeout(() => {
     const { name } = req.body;
@@ -173,6 +194,7 @@ const COOKIE_MAX_AGE = 3600000 * 24 * 14;
 const PAGING_SIZE = 20;
 
 /**
+ * API 응답 객체를 생성
  *
  * @param {object} param
  * @param {object=} param.data
@@ -189,5 +211,8 @@ function makeResponse({ data, totalCount, resultCode, resultMessage }) {
   };
 }
 
+// ----- 서버 실행 -------------------------------------------------------------//
+
 const PORT = 3001;
+
 app.listen(PORT, () => console.log(`app listening on port ${PORT}!`));

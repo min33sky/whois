@@ -7,8 +7,8 @@ import { FETCH_PAGE, FETCH_KEY } from '../redux-helper';
 
 /**
  * API 요청이 느릴 때 상태를 변경시키는 제너레이터를 생성하는 함수
- * @param {*} actionType
- * @param {*} fetchKey
+ * @param {string} actionType 액션 타입
+ * @param {string} fetchKey 요청 시간이 오래 걸리는 키
  */
 function makeCheckSlowSaga(actionType, fetchKey) {
   return function* () {
@@ -24,24 +24,24 @@ function makeCheckSlowSaga(actionType, fetchKey) {
   };
 }
 
-//* api 요청 캐시
+// api 요청 캐시할 장소 생성
 const apiCache = new lruCache({
   max: 500, // 캐시 최대 크기
   maxAge: 1000 * 60 * 2, // 최대 2분 저장
 });
 
-const SAGA_CALL_TYPE = call(() => {}).type; // 사가 call 이펙트의 타입
+const SAGA_CALL_TYPE = call(() => {}).type; // saga call effect 타입
 
 /**
- * call 사가 이펙트인지 확인하는 함수
- * @param {*} value
+ * CALL 사가 이펙트인지 확인하는 함수
+ * @param {object} value 액션 객체
  */
 function getIsCallEffect(value) {
   return value && value.type === SAGA_CALL_TYPE;
 }
 
 /**
- * ? 사가 미들웨어와 사가 함수 사이에서 소통하는 사가 함수
+ * 사가 미들웨어와 사가 함수 사이에서 소통하는 사가 함수
  * - 캐싱된 값이 있으면 사가 미들웨어로 보내지 않고 다시 사가 함수로 캐싱된 값을 넘긴다.
  *
  * @param {object} param
@@ -173,7 +173,15 @@ export function makeFetchSaga({ fetchSaga, canCache, getTotalCount = (res) => re
   };
 }
 
-// 쿼리 파라미터 순서가 바뀌어도 같은 key가 나오도록 키 이름으로 정렬한다
+/**
+ * 쿼리 파라미터 순서가 바뀌어도 같은 key가 나오도록 키 이름으로 정렬한다
+ *
+ * @param {string} actionType 액션 타입
+ * @param {object} param
+ * @param {string} param.apiHost  baseURL
+ * @param {string} param.url 요청 주소
+ * @param {object} param.params 쿼리 파라미터
+ */
 export function getApiCacheKey(actionType, { apiHost, url, params }) {
   const prefix = `${actionType}_${apiHost ? apiHost + url : url}`;
   const keys = params ? Object.keys(params) : [];
@@ -196,6 +204,10 @@ export function getFetchKey(action) {
   return fetchKey === undefined ? action.type : String(fetchKey);
 }
 
+/**
+ * 제네레이터 함수인지 체크
+ * @param {object} obj dd
+ */
 function getIsGeneratorFunction(obj) {
   const constructor = obj.constructor;
   if (!constructor) {
@@ -209,8 +221,9 @@ function getIsGeneratorFunction(obj) {
 }
 
 /**
- *
- * @param {string=} actionType
+ * 캐시된 API를 삭제
+ * - 액션 타입을 지정하지 않으면 모든 캐시 삭제
+ * @param {string=} actionType 액션 타입
  */
 export function deleteApiCache(actionType) {
   let keys = apiCache.keys();
