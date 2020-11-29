@@ -9,10 +9,18 @@ export const Types = {
 
 export const actions = {
   setValue: createSetValueAction(Types.SetValue),
-  fetchUser: (name) => ({
+
+  /**
+   * 유저 정보를 가져오기
+   */
+  fetchUser: name => ({
     type: Types.FetchUser,
     name,
   }),
+
+  /**
+   * 유저 정보 업데이트 액션 함수
+   */
   fetchUpdateUser: ({ user, key, value, fetchKey }) => ({
     type: Types.FetchUpdateUser,
     user,

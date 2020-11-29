@@ -49,13 +49,13 @@ function getIsCallEffect(value) {
  * @param {boolean} param.canCache 캐시 유무
  * @param {function=} param.getTotalCount 페이징네이션 할 때 필요
  */
-export function makeFetchSaga({ fetchSaga, canCache, getTotalCount = (res) => res?.totalCount }) {
+export function makeFetchSaga({ fetchSaga, canCache, getTotalCount = res => res?.totalCount }) {
   return function* (action) {
     const { type: actionType } = action;
     const fetchPage = action[FETCH_PAGE];
     const fetchKey = getFetchKey(action);
     const nextPage = yield select(
-      (state) => state.common.fetchInfo.nextPageMap[actionType]?.[fetchKey] || 0,
+      state => state.common.fetchInfo.nextPageMap[actionType]?.[fetchKey] || 0,
     );
 
     const page = fetchPage !== undefined ? fetchPage : nextPage;
@@ -154,7 +154,7 @@ export function makeFetchSaga({ fetchSaga, canCache, getTotalCount = (res) => re
       }
 
       if (done) {
-        console.log('********** 이터레이터 반복 끝 *****************');
+        console.log('********** 이터레이터 반복 끝 *************');
         const nextIter = iterStack.pop();
 
         if (nextIter) {
@@ -200,7 +200,6 @@ export function getApiCacheKey(actionType, { apiHost, url, params }) {
  */
 export function getFetchKey(action) {
   const fetchKey = action[FETCH_KEY];
-  console.log('....................fetchkey', action, fetchKey);
   return fetchKey === undefined ? action.type : String(fetchKey);
 }
 
@@ -228,7 +227,7 @@ function getIsGeneratorFunction(obj) {
 export function deleteApiCache(actionType) {
   let keys = apiCache.keys();
   if (actionType) {
-    keys = keys.filter((key) => key.includes(actionType));
+    keys = keys.filter(key => key.includes(actionType));
   }
   for (const key of keys) {
     apiCache.del(key);

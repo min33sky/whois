@@ -4,9 +4,9 @@ import { FetchStatus } from '../constant';
 import { FETCH_KEY } from '../redux-helper';
 
 /**
- * API 요청 관련 훅
+ * API 요청 관련 Hook
  * @param {string} actionType 액션 타입
- * @param {string=} fetchKey 여러개의 상태값으로 관리하고 싶을 때 사용하는 키 (딱히 사용 할 필요 없다)
+ * @param {string=} fetchKey 여러개의 상태값으로 관리하고 싶을 때 사용하는 키
  */
 export default function useFetchInfo(actionType, fetchKey) {
   const _fetchKey = getFetchKey({
@@ -15,7 +15,7 @@ export default function useFetchInfo(actionType, fetchKey) {
   });
 
   return useSelector(
-    (state) => ({
+    state => ({
       fetchStatus: state.common.fetchInfo.fetchStatusMap[actionType]?.[_fetchKey],
       isFetching:
         state.common.fetchInfo.fetchStatusMap[actionType]?.[_fetchKey] === FetchStatus.Request,
