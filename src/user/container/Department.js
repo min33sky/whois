@@ -3,11 +3,14 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { actions } from '../state';
 
+/**
+ * 소속 컴포넌트
+ */
 export default function Department() {
   const [isEditDepartment, setIsEditDepartment] = useState(false);
   const [tempDepartment, setTempDepartment] = useState('');
 
-  const user = useSelector((state) => state.user.user);
+  const user = useSelector(state => state.user.user);
 
   const dispatch = useDispatch();
 
@@ -33,14 +36,15 @@ export default function Department() {
       {isEditDepartment && (
         <Input
           value={tempDepartment}
-          onChange={(e) => setTempDepartment(e.target.value)}
+          onChange={e => setTempDepartment(e.target.value)}
           onPressEnter={onSaveDepartment}
           onBlur={() => setIsEditDepartment(false)}
           style={{ width: '100%' }}
           autoFocus
-          // ref={(ref) => ref && ref.focus()}
+          // ref={(ref) => ref && ref.focus()}를 antd에서 autoFocus로 지원
         />
       )}
+
       {!isEditDepartment && (
         <Button
           type='text'

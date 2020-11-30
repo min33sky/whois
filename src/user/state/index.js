@@ -5,6 +5,8 @@ export const Types = {
   SetValue: 'user/SetValue',
   FetchUser: 'user/FetchUser',
   FetchUpdateUser: 'user/FetchUpdateUser',
+  FetchUserHistory: 'user/FetchUserHistory',
+  AddHistory: 'user/AddHistory',
 };
 
 export const actions = {
@@ -28,14 +30,27 @@ export const actions = {
     value,
     [FETCH_KEY]: fetchKey,
   }),
+
+  /**
+   * 유저 수정 내역 가져오는 액션 함수
+   */
+  fetchUserHistory: name => ({ type: Types.FetchUserHistory, name }),
+
+  /**
+   * 수정 내역 추가 액션 함수
+   */
+  addHistory: history => ({ type: Types.AddHistory, history }),
 };
 
 const INITIAL_STATE = {
   user: undefined,
+  userHistory: [],
 };
 
 const reducer = createReducer(INITIAL_STATE, {
   [Types.SetValue]: setValueReducer,
+  [Types.AddHistory]: (state, action) =>
+    (state.userHistory = [action.history, ...state.userHistory]),
 });
 
 export default reducer;

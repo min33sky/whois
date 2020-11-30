@@ -1,4 +1,4 @@
-import { all, call, put, takeEvery } from 'redux-saga/effects';
+import { all, call, put, takeEvery, takeLeading, cancel } from 'redux-saga/effects';
 import { actions, Types } from './index';
 import { callApi } from './../../common/util/api';
 import { makeFetchSaga } from './../../common/util/fetch';
@@ -10,17 +10,23 @@ import { makeFetchSaga } from './../../common/util/fetch';
  * @param {string} param.keyword 키워드
  */
 function* fetchAutoCompletes({ keyword }) {
-  console.log('call 요청');
   const { isSuccess, data } = yield call(callApi, {
     url: '/user/search',
     params: { keyword },
   });
 
-  console.log('###########################################################');
+  if (isSuccess && data) {
+    yield put(actions.setValue('autoCompletes', data));
+  }
+}
+
+function* fetchAllHistory() {
+  const { isSuccess, data } = yield call(callApi, {
+    url: '/history',
+  });
 
   if (isSuccess && data) {
-    console.log('put 요청');
-    yield put(actions.setValue('autoCompletes', data));
+    yield put(actions.setValue('userHistory', data));
   }
 }
 
@@ -29,6 +35,14 @@ export default function* searchSaga() {
     takeEvery(
       Types.FetchAutoCompletes,
       makeFetchSaga({ fetchSaga: fetchAutoCompletes, canCache: true }),
+    ),
+
+    takeLeading(
+      Types.FetchAllHistory,
+      makeFetchSaga({
+        fetchSaga: fetchAllHistory,
+        canCache: false,
+      }),
     ),
   ]);
 }

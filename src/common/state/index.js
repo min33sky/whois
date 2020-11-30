@@ -9,8 +9,8 @@ export const Types = {
 
 export const actions = {
   setValue: createSetValueAction(Types.SetValue),
-  setIsSlow: (payload) => ({ type: Types.SetIsSlow, payload }),
-  setFetchStatus: (payload) => ({ type: Types.SetFetchStatus, payload }),
+  setIsSlow: payload => ({ type: Types.SetIsSlow, payload }),
+  setFetchStatus: payload => ({ type: Types.SetFetchStatus, payload }),
 };
 
 const INITIAL_STATE = {
@@ -22,17 +22,20 @@ const INITIAL_STATE = {
     nextPageMap: {},
   },
 };
+
 const reducer = createReducer(INITIAL_STATE, {
   [Types.SetValue]: setValueReducer,
 
   [Types.SetFetchStatus]: (state, action) => {
     const { actionType, fetchKey, status, totalCount, nextPage, errorMessage } = action.payload;
+
+    // 해당하는 Fetch 상태 변경
     if (!state.fetchInfo.fetchStatusMap[actionType]) {
       state.fetchInfo.fetchStatusMap[actionType] = {};
     }
     state.fetchInfo.fetchStatusMap[actionType][fetchKey] = status;
 
-    //* Success or Fail일때 Fetch 관련 상태 변경
+    // 요청이 Success or Fail일때 Fetch 상태 변경
     if (status !== FetchStatus.Request) {
       if (state.fetchInfo.isSlowMap[actionType]) {
         state.fetchInfo.isSlowMap[actionType][fetchKey] = false;

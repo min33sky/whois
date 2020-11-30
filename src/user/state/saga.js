@@ -1,4 +1,4 @@
-import { all, takeEvery, call, put } from 'redux-saga/effects';
+import { all, takeEvery, call, put, takeLeading } from 'redux-saga/effects';
 import { actions, Types } from './index';
 import { callApi } from './../../common/util/api';
 import { deleteApiCache, makeFetchSaga } from './../../common/util/fetch';
@@ -17,7 +17,7 @@ function* fetchUser({ name }) {
 
   if (isSuccess && data) {
     //? 키워드를 이름으로 사용했는지 검증
-    const user = data.find((item) => item.name === name);
+    const user = data.find(item => item.name === name);
 
     if (user) {
       yield put(actions.setValue('user', user));
@@ -51,8 +51,21 @@ function* fetchUpdateUser({ user, key, value }) {
   if (isSuccess && data) {
     // ? 캐싱된 검색어 목록을 삭제한다. (뒤로가기 했을 때 이전 결과가 나타나기 때문에)
     deleteApiCache();
+    // 수정 내역도 업데이트 한다.
+    yield put(actions.addHistory(data.history));
   } else {
     yield put(actions.setValue('user', user)); // 원본 데이터로 롤백
+  }
+}
+
+function* fetchUserHistory({ name }) {
+  const { isSuccess, data } = yield call(callApi, {
+    url: '/history',
+    params: { name },
+  });
+
+  if (isSuccess && data) {
+    yield put(actions.setValue('userHistory', data));
   }
 }
 
@@ -65,10 +78,17 @@ export default function* userSaga() {
         canCache: true,
       }),
     ),
-    takeEvery(
+    takeLeading(
       Types.FetchUpdateUser,
       makeFetchSaga({
         fetchSaga: fetchUpdateUser,
+        canCache: false,
+      }),
+    ),
+    takeLeading(
+      Types.FetchUserHistory,
+      makeFetchSaga({
+        fetchSaga: fetchUserHistory,
         canCache: false,
       }),
     ),

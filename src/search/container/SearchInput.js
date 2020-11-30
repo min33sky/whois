@@ -8,8 +8,7 @@ import { actions as userActions } from '../../user/state';
 
 export default function SearchInput() {
   const dispatch = useDispatch();
-  // @ts-ignore
-  const keyword = useSelector((state) => state.search.keyword);
+  const keyword = useSelector(state => state.search.keyword);
 
   function setKeyword(value) {
     if (value !== keyword) {
@@ -20,11 +19,10 @@ export default function SearchInput() {
 
   const history = useHistory();
 
-  // @ts-ignore
-  const autoCompletes = useSelector((state) => state.search.autoCompletes);
+  const autoCompletes = useSelector(state => state.search.autoCompletes);
 
   function goToUser(value) {
-    const user = autoCompletes.find((item) => item.name === value);
+    const user = autoCompletes.find(item => item.name === value);
     if (user) {
       dispatch(userActions.setValue('user', user));
       history.push(`/user/${user.name}`);
@@ -37,7 +35,7 @@ export default function SearchInput() {
       onChange={setKeyword}
       onSelect={goToUser}
       style={{ width: '100%' }}
-      options={autoCompletes.map((item) => ({
+      options={autoCompletes.map(item => ({
         value: item.name,
         label: (
           <Space>

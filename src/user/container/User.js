@@ -1,4 +1,4 @@
-import { Col, Descriptions, PageHeader, Row, Space, Spin, Typography } from 'antd';
+import { Col, Descriptions, PageHeader, Row, Typography } from 'antd';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -22,11 +22,13 @@ export default function User({ match }) {
   const user = useSelector(state => state.user.user);
   const name = match.params.name;
 
+  const userHistory = useSelector(state => state.user.userHistory);
+
   useEffect(() => {
     dispatch(actions.fetchUser(name));
+    dispatch(actions.fetchUserHistory(name));
   }, [dispatch, name]);
 
-  // const { isFetched, isSlow } = useFetchInfo(Types.FetchUser, name);
   const { isFetched } = useFetchInfo(Types.FetchUser);
 
   return (
@@ -41,6 +43,7 @@ export default function User({ match }) {
               <Descriptions.Item label='이름'>
                 <Typography.Text>{user.name}</Typography.Text>
               </Descriptions.Item>
+
               <Descriptions.Item
                 label={
                   <FetchLabel
@@ -52,6 +55,7 @@ export default function User({ match }) {
               >
                 <Department />
               </Descriptions.Item>
+
               <Descriptions.Item
                 label={
                   <FetchLabel label='태그' actionType={Types.FetchUpdateUser} fetchKey='tag' />
@@ -59,8 +63,9 @@ export default function User({ match }) {
               >
                 <TagList />
               </Descriptions.Item>
-              <Descriptions.Item label='수정내역이 들어갈 곳'>
-                <History />
+
+              <Descriptions.Item label='수정내역'>
+                <History items={userHistory} />
               </Descriptions.Item>
             </Descriptions>
           )}

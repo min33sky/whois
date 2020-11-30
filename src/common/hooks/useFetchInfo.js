@@ -4,7 +4,7 @@ import { FetchStatus } from '../constant';
 import { FETCH_KEY } from '../redux-helper';
 
 /**
- * API 요청 관련 Hook
+ * API Fetch Hook
  * @param {string} actionType 액션 타입
  * @param {string=} fetchKey 여러개의 상태값으로 관리하고 싶을 때 사용하는 키
  */
