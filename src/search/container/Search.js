@@ -4,9 +4,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import History from '../../common/components/History';
 import Setting from '../components/Setting';
 import { actions } from '../state';
+import { actions as authActions } from '../../auth/state';
 import SearchInput from './SearchInput';
+import useNeedLogin from './../../common/hooks/useNeedLogin';
 
 export default function Search() {
+  useNeedLogin();
+
   const userHistory = useSelector(state => state.search.userHistory);
   const dispatch = useDispatch();
 
@@ -16,11 +20,15 @@ export default function Search() {
     dispatch(actions.fetchAllHistory());
   }, [dispatch]);
 
+  function onLogout() {
+    dispatch(authActions.fetchLogout());
+  }
+
   return (
     <>
       <Row justify='end' style={{ padding: 20, marginBottom: 100 }}>
         <Col>
-          <Setting logout={() => {}} />
+          <Setting logout={onLogout} />
         </Col>
       </Row>
       <Row justify='center' style={{ marginBottom: 50 }}>

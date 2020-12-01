@@ -14,8 +14,11 @@ import TagList from './TagList';
  * 유저 정보 페이지
  * @param {object} param
  * @param {import('react-router-dom').match} param.match match
- */
+ */ import useNeedLogin from './../../common/hooks/useNeedLogin';
+
 export default function User({ match }) {
+  useNeedLogin();
+
   const history = useHistory();
   const dispatch = useDispatch();
 

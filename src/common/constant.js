@@ -7,3 +7,9 @@ export const FetchStatus = {
   Success: 'Success',
   Fail: 'Fail',
 };
+
+// 로그인 상태
+export const AuthStatus = {
+  Login: 'Login',
+  NotLogin: 'NotLogin',
+};

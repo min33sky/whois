@@ -113,7 +113,7 @@ app.get('/auth/user', (req, res) => {
 
 /**
  * 로그인
- *
+ *!로그인 과정에서 패스워드는 무시함
  * POST /auth/login
  */
 app.post('/auth/login', (req, res) => {
@@ -123,11 +123,14 @@ app.post('/auth/login', (req, res) => {
       if (err) {
         throw err;
       }
+
       if (rows.length) {
+        // 로그인 성공 시 쿠키 생성
         res.cookie('token', name, {
           maxAge: COOKIE_MAX_AGE,
           httpOnly: true,
         });
+        // 응답
         res.send(makeResponse({ data: { name } }));
       } else {
         res.send(
@@ -141,6 +144,11 @@ app.post('/auth/login', (req, res) => {
   }, 1);
 });
 
+/**
+ * 로그아웃
+ *
+ * GET /auth/logout
+ */
 app.get('/auth/logout', (req, res) => {
   setTimeout(() => {
     res.cookie('token', '', {
@@ -151,6 +159,11 @@ app.get('/auth/logout', (req, res) => {
   }, 1);
 });
 
+/**
+ * 회원 가입
+ *
+ * POST /auth/signup
+ */
 app.post('/auth/signup', (req, res) => {
   setTimeout(() => {
     const { email } = req.body;
