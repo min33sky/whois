@@ -1,4 +1,4 @@
-import { createSetValueAction } from '../../common/redux-helper';
+import { createSetValueAction, FETCH_PAGE } from '../../common/redux-helper';
 import { createReducer, setValueReducer } from './../../common/redux-helper';
 
 export const Types = {
@@ -14,8 +14,9 @@ export const actions = {
     keyword,
   }),
 
-  fetchAllHistory: () => ({
+  fetchAllHistory: (page = 0) => ({
     type: Types.FetchAllHistory,
+    [FETCH_PAGE]: page,
   }),
 };
 

@@ -41,6 +41,11 @@ app.get('/user/search', (req, res) => {
   }, 1);
 });
 
+/**
+ * 수정 내역 가져오기
+ *
+ * GET /history?page=
+ */
 app.get('/history', (req, res) => {
   setTimeout(() => {
     const { name, page = 0 } = req.query;
@@ -55,7 +60,7 @@ app.get('/history', (req, res) => {
       }
       db.all('SELECT count(*) as totalCount FROM history', [], (err, rows2) => {
         const totalCount = rows2[0].totalCount;
-        res.send(makeResponse({ data: rows, totalCount }));
+        res.json(makeResponse({ data: rows, totalCount }));
       });
     });
   }, 1);
@@ -110,7 +115,6 @@ app.post('/user/update', (req, res) => {
 app.get('/auth/user', (req, res) => {
   setTimeout(() => {
     const name = req.cookies.token;
-    console.log('로그인 체크중....');
     res.json(makeResponse({ data: { name } }));
   }, 1);
 });
@@ -208,7 +212,7 @@ app.post('/auth/signup', (req, res) => {
 });
 
 const COOKIE_MAX_AGE = 3600000 * 24 * 14;
-const PAGING_SIZE = 20;
+const PAGING_SIZE = 20; // 1번 요청 당 응답할 데이터 수
 
 /**
  * API 응답 객체를 생성

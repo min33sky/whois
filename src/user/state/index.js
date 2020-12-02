@@ -1,4 +1,4 @@
-import { createSetValueAction } from '../../common/redux-helper';
+import { createSetValueAction, NOT_IMMUTABLE } from '../../common/redux-helper';
 import { createReducer, setValueReducer, FETCH_KEY } from './../../common/redux-helper';
 
 export const Types = {
@@ -7,6 +7,7 @@ export const Types = {
   FetchUpdateUser: 'user/FetchUpdateUser',
   FetchUserHistory: 'user/FetchUserHistory',
   AddHistory: 'user/AddHistory',
+  Initialize: 'user/Initialize',
 };
 
 export const actions = {
@@ -40,6 +41,11 @@ export const actions = {
    * 수정 내역 추가 액션 함수
    */
   addHistory: history => ({ type: Types.AddHistory, history }),
+
+  initilize: () => ({
+    type: Types.Initialize,
+    [NOT_IMMUTABLE]: true,
+  }),
 };
 
 const INITIAL_STATE = {
@@ -51,6 +57,8 @@ const reducer = createReducer(INITIAL_STATE, {
   [Types.SetValue]: setValueReducer,
   [Types.AddHistory]: (state, action) =>
     (state.userHistory = [action.history, ...state.userHistory]),
+  // 초기화
+  [Types.Initialize]: () => INITIAL_STATE,
 });
 
 export default reducer;

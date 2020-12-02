@@ -62,12 +62,12 @@ export function makeFetchSaga({ fetchSaga, canCache, getTotalCount = res => res?
     const iterStack = [];
 
     // console.log('action ->', action);
-    // console.log('fetchPage ->', fetchPage);
+    console.log('fetchPage ->', fetchPage);
     // console.log('fetchKey ->', fetchKey);
-    // console.log('nextPage ->', nextPage);
-    // console.log('page ->', page);
+    console.log('nextPage ->', nextPage);
+    console.log('page ->', page);
 
-    let iter = fetchSaga(action, page); // 요청한 사가 함수를 호출해서 제너레이터를 생성
+    let iter = fetchSaga(action, page); //? 액션 객체와 페이지 번호를 인자로 넣어 사가를 호출해 제너레이터 생성
     let res;
     let checkSlowTask;
     let params;
@@ -102,16 +102,14 @@ export function makeFetchSaga({ fetchSaga, canCache, getTotalCount = res => res?
         let apiResult = canCache && apiCache.has(cacheKey) ? apiCache.get(cacheKey) : undefined;
         const isFromCache = !!apiResult;
 
-        console.log('cacheKey ->', cacheKey);
-
         // 캐시된 요청이 없으면 api 호출
         if (!isFromCache) {
           if (!apiResult) {
             try {
               //? 0.5초 이상 걸릴 경우 느린 요청 상태로 변경하는 논블로킹 이펙트를 생성한다.
               checkSlowTask = yield fork(makeCheckSlowSaga(actionType, fetchKey));
-              console.log('-----------------------------------------------------------');
               apiResult = yield value; //! call effect를 사가 미들웨어로 보내고 응답 대기
+              console.log('-----------------------------------------------------------', value);
             } catch (error) {
               apiResult = error.response.data;
             }
@@ -132,6 +130,8 @@ export function makeFetchSaga({ fetchSaga, canCache, getTotalCount = res => res?
             apiCache.set(cacheKey, apiResult);
           }
 
+          console.log('############## apiResult ##################', apiResult);
+
           const totalCount = getTotalCount(apiResult);
 
           console.log('apiResult', apiResult);
@@ -142,7 +142,7 @@ export function makeFetchSaga({ fetchSaga, canCache, getTotalCount = res => res?
             fetchKey,
             status: isSuccess ? FetchStatus.Success : FetchStatus.Fail,
             totalCount,
-            nextPage: isSuccess ? page + 1 : page,
+            nextPage: isSuccess ? page + 1 : page, //? 다음 페이지 요청을 위한 처리
             errorMessage: isSuccess ? '' : apiResult.resultMessage,
           };
         }
@@ -160,7 +160,7 @@ export function makeFetchSaga({ fetchSaga, canCache, getTotalCount = res => res?
           continue;
         }
 
-        //* Success or Fail 상태로 변경
+        //* 요청을 처리했으니 Fetch 상태를 Success or Fail 상태로 변경
         if (params) {
           yield put(actions.setFetchStatus(params));
         }

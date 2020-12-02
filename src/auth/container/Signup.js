@@ -6,6 +6,9 @@ import AuthLayout from '../components/AuthLayout';
 import { actions } from '../state';
 import useBlockLoginUser from './../hooks/useBlockLoginUser';
 
+/**
+ * 회원가입 컴포넌트
+ */
 export default function Signup() {
   useBlockLoginUser();
 

@@ -37,6 +37,10 @@ export default function User({ match }) {
     }
   }, [dispatch, name, authStatus]);
 
+  useEffect(() => {
+    return () => dispatch(actions.initilize());
+  }, [dispatch]);
+
   // 데이터가 패치되었는지 유무
   const { isFetched } = useFetchInfo(Types.FetchUser);
 
@@ -44,7 +48,8 @@ export default function User({ match }) {
     <Row justify='center'>
       <Col xs={24} md={20} lg={14}>
         <PageHeader
-          onBack={history.goBack}
+          // ? history.goBack을 써도 되지만 이전 주소가 아닌 메인으로 라우팅하는 것을 의도함
+          onBack={() => history.push('/')}
           title={<FetchLabel label='사용자 정보' actionType={Types.FetchUser} />}
         >
           {user && (

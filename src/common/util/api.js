@@ -29,8 +29,8 @@ export function callApi({ method = 'get', url, params, data }) {
     params,
     data,
     withCredentials: true,
-  }).then((response) => {
-    const { resultCode, resultMessage } = response.data;
+  }).then(response => {
+    const { resultCode, resultMessage, totalCount } = response.data;
 
     if (resultCode < 0) {
       message.error(resultMessage);
@@ -41,6 +41,7 @@ export function callApi({ method = 'get', url, params, data }) {
       data: response.data.data,
       resultCode,
       resultMessage,
+      totalCount,
     };
   });
 }

@@ -7,11 +7,15 @@ import AuthLayout from '../components/AuthLayout';
 import { actions } from '../state';
 import useBlockLoginUser from './../hooks/useBlockLoginUser';
 
+/**
+ * 로그인 컴포넌트
+ */
 export default function Login() {
   useBlockLoginUser();
 
   const dispatch = useDispatch();
 
+  //? Form.Item의 name 값이 인자로 들어온다
   function onFinish({ username, password }) {
     dispatch(actions.fetchLogin(username, password));
   }
