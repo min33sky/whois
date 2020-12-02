@@ -2,7 +2,7 @@ import { Row, Col, Typography, Form } from 'antd';
 import React from 'react';
 
 /**
- * 폼 레이아웃 컴포넌트
+ * 폼 레이아웃
  * @param {object} param
  * @param {() => void} param.onFinish Form Submit Handler
  * @param {import('react').ReactNode} param.children Form Component

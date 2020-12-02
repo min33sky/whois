@@ -104,10 +104,14 @@ app.post('/user/update', (req, res) => {
   }, 1);
 });
 
+/**
+ * 로그인 한 유저인지 확인
+ */
 app.get('/auth/user', (req, res) => {
   setTimeout(() => {
     const name = req.cookies.token;
-    res.send(makeResponse({ data: { name } }));
+    console.log('로그인 체크중....');
+    res.json(makeResponse({ data: { name } }));
   }, 1);
 });
 
@@ -131,9 +135,9 @@ app.post('/auth/login', (req, res) => {
           httpOnly: true,
         });
         // 응답
-        res.send(makeResponse({ data: { name } }));
+        res.json(makeResponse({ data: { name } }));
       } else {
-        res.send(
+        res.status(401).json(
           makeResponse({
             resultCode: -1,
             resultMessage: '존재하지 않는 사용자입니다.',

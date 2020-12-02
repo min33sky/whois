@@ -15,6 +15,7 @@ import TagList from './TagList';
  * @param {object} param
  * @param {import('react-router-dom').match} param.match match
  */ import useNeedLogin from './../../common/hooks/useNeedLogin';
+import { AuthStatus } from './../../common/constant';
 
 export default function User({ match }) {
   useNeedLogin();
@@ -23,15 +24,20 @@ export default function User({ match }) {
   const dispatch = useDispatch();
 
   const user = useSelector(state => state.user.user);
-  const name = match.params.name;
+  const name = match.params.name; // 검색할 유저 이름
 
+  // 로그인 유저일 경우 수정 내역을 불러온다.
+  const authStatus = useSelector(state => state.auth.status);
   const userHistory = useSelector(state => state.user.userHistory);
 
   useEffect(() => {
-    dispatch(actions.fetchUser(name));
-    dispatch(actions.fetchUserHistory(name));
-  }, [dispatch, name]);
+    if (authStatus === AuthStatus.Login) {
+      dispatch(actions.fetchUserHistory(name));
+      dispatch(actions.fetchUser(name));
+    }
+  }, [dispatch, name, authStatus]);
 
+  // 데이터가 패치되었는지 유무
   const { isFetched } = useFetchInfo(Types.FetchUser);
 
   return (

@@ -45,7 +45,7 @@ function getIsCallEffect(value) {
  * - 캐싱된 값이 있으면 사가 미들웨어로 보내지 않고 다시 사가 함수로 캐싱된 값을 넘긴다.
  *
  * @param {object} param
- * @param {function} param.fetchSaga api 요청 사가
+ * @param {function} param.fetchSaga API Request Saga
  * @param {boolean} param.canCache 캐시 유무
  * @param {function=} param.getTotalCount 페이징네이션 할 때 필요
  */
@@ -72,9 +72,6 @@ export function makeFetchSaga({ fetchSaga, canCache, getTotalCount = res => res?
     let checkSlowTask;
     let params;
 
-    console.log('fetchSaga --> ', fetchSaga);
-    console.log('iter --> ', iter);
-
     while (true) {
       const { value, done } = iter.next(res);
 
@@ -85,9 +82,6 @@ export function makeFetchSaga({ fetchSaga, canCache, getTotalCount = res => res?
         iter = value.payload.fn(...value.payload.args);
         continue;
       }
-
-      console.log('value -----> ', value);
-      console.log('done -----> ', done);
 
       /**
        ** API 요청 상태 업데이트 (Request 상태로 설정)
@@ -102,7 +96,7 @@ export function makeFetchSaga({ fetchSaga, canCache, getTotalCount = res => res?
           }),
         );
 
-        //* 캐시 관련
+        // 캐시 관련
         const apiParam = value.payload.args[0]; // call effect의 두 번째 매개변수
         const cacheKey = getApiCacheKey(actionType, apiParam);
         let apiResult = canCache && apiCache.has(cacheKey) ? apiCache.get(cacheKey) : undefined;
@@ -110,12 +104,17 @@ export function makeFetchSaga({ fetchSaga, canCache, getTotalCount = res => res?
 
         console.log('cacheKey ->', cacheKey);
 
-        //* 캐시된 요청이 없으면 api 호출
+        // 캐시된 요청이 없으면 api 호출
         if (!isFromCache) {
           if (!apiResult) {
-            //* 0.5초 이상 걸릴 경우 느린 요청 상태로 변경하는 논블로킹 이펙트를 생성한다.
-            checkSlowTask = yield fork(makeCheckSlowSaga(actionType, fetchKey));
-            apiResult = yield value; //! call effect를 사가 미들웨어로 보내고 응답 대기
+            try {
+              //? 0.5초 이상 걸릴 경우 느린 요청 상태로 변경하는 논블로킹 이펙트를 생성한다.
+              checkSlowTask = yield fork(makeCheckSlowSaga(actionType, fetchKey));
+              console.log('-----------------------------------------------------------');
+              apiResult = yield value; //! call effect를 사가 미들웨어로 보내고 응답 대기
+            } catch (error) {
+              apiResult = error.response.data;
+            }
             //? 응답이 왔으므로 느린 요청 사가를 취소한다.
             if (checkSlowTask) {
               yield cancel(checkSlowTask);
@@ -124,9 +123,8 @@ export function makeFetchSaga({ fetchSaga, canCache, getTotalCount = res => res?
         }
 
         res = apiResult;
-        console.log('res', res);
 
-        //* API 요청이 성공했을 때
+        // API 요청이 성공했을 때
         if (apiResult) {
           const isSuccess = apiResult.isSuccess;
           //* api 요청이 성공이고 캐시되지 않았다면 캐싱한다.

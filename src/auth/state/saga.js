@@ -3,21 +3,37 @@ import { actions, Types } from './index';
 import { makeFetchSaga } from './../../common/util/fetch';
 import { callApi } from './../../common/util/api';
 
+/**
+ * 로그인 요청
+ * @param {object} param
+ * @param {string} param.name 유저 이름
+ * @param {string} param.password 패스워드
+ */
 function* fetchLogin({ name, password }) {
-  const { isSuccess, data } = yield call(callApi, {
-    url: '/auth/login',
-    method: 'post',
-    data: {
-      name,
-      password,
-    },
-  });
+  try {
+    const { isSuccess, data } = yield call(callApi, {
+      url: '/auth/login',
+      method: 'post',
+      data: {
+        name,
+        password,
+      },
+    });
 
-  if (isSuccess && data) {
-    yield put(actions.setUser(data.name));
+    if (isSuccess && data) {
+      yield put(actions.setUser(data.name));
+    }
+  } catch (error) {
+    console.log('에러발생');
+    console.error('error', error);
   }
 }
 
+/**
+ * 회원 가입 요청
+ * @param {object} param
+ * @param {string} param.email 이메일 주소
+ */
 function* fetchSignup({ email }) {
   const { isSuccess, data } = yield call(callApi, {
     url: '/auth/signup',
@@ -32,6 +48,9 @@ function* fetchSignup({ email }) {
   }
 }
 
+/**
+ * 유저 정보 가져오기
+ */
 export function* fetchUser() {
   const { isSuccess, data } = yield call(callApi, {
     url: '/auth/user',
@@ -43,6 +62,9 @@ export function* fetchUser() {
   }
 }
 
+/**
+ * 로그아웃 요청
+ */
 export function* fetchLogout() {
   const { isSuccess } = yield call(callApi, {
     url: '/auth/logout',

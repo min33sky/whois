@@ -7,18 +7,21 @@ import { actions } from '../state';
 import { actions as authActions } from '../../auth/state';
 import SearchInput from './SearchInput';
 import useNeedLogin from './../../common/hooks/useNeedLogin';
+import { AuthStatus } from './../../common/constant';
 
 export default function Search() {
   useNeedLogin();
 
   const userHistory = useSelector(state => state.search.userHistory);
+  const authStatus = useSelector(state => state.auth.status);
   const dispatch = useDispatch();
 
   // 히스토리 api 호출
-
   useEffect(() => {
-    dispatch(actions.fetchAllHistory());
-  }, [dispatch]);
+    if (authStatus === AuthStatus.Login) {
+      dispatch(actions.fetchAllHistory());
+    }
+  }, [dispatch, authStatus]);
 
   function onLogout() {
     dispatch(authActions.fetchLogout());
