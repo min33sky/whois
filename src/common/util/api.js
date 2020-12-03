@@ -14,7 +14,7 @@ import { API_HOST } from './../constant';
  * API 호출 함수
  *
  * @param {object} param 요청에 필요한 데이터
- * @param {'get' | 'post' =} param.method 요청 메소드
+ * @param {'get' | 'post'=} param.method 요청 메소드
  * @param {string} param.url API 주소
  * @param {object=} param.params 쿼리 파라미터
  * @param {object=} param.data POST 요청 시 보낼 데이터

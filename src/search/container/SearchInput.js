@@ -6,6 +6,9 @@ import { useHistory } from 'react-router-dom';
 import { actions } from '../state';
 import { actions as userActions } from '../../user/state';
 
+/**
+ * 검색창 컴포넌트
+ */
 export default function SearchInput() {
   const dispatch = useDispatch();
   const keyword = useSelector(state => state.search.keyword);

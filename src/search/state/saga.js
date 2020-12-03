@@ -1,4 +1,4 @@
-import { all, call, put, takeEvery, takeLeading, cancel, select } from 'redux-saga/effects';
+import { all, call, put, takeEvery, takeLeading, select } from 'redux-saga/effects';
 import { actions, Types } from './index';
 import { callApi } from './../../common/util/api';
 import { makeFetchSaga } from './../../common/util/fetch';
@@ -22,7 +22,7 @@ function* fetchAutoCompletes({ keyword }) {
 
 /**
  * 모든 수정 내역 가져오기
- * @param {*} _ 액션 객체인데 필요 없다
+ * @param {object} _ 액션 객체
  * @param {number} page 페이지 번호
  */
 function* fetchAllHistory(_, page) {

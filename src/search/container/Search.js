@@ -12,12 +12,15 @@ import { Types } from './../state/index';
 import { useInfinityScroll } from '../../common/hooks/useInfinityScroll';
 import Loader from '../../common/components/Loader';
 
+/**
+ * 검색 페이지
+ */
 export default function Search() {
   useNeedLogin();
 
+  const dispatch = useDispatch();
   const userHistory = useSelector(state => state.search.userHistory);
   const authStatus = useSelector(state => state.auth.status);
-  const dispatch = useDispatch();
 
   const page = useSelector(
     state => state.common.fetchInfo.nextPageMap[Types.FetchAllHistory]?.[Types.FetchAllHistory],

@@ -1,21 +1,20 @@
 import { useEffect } from 'react';
 
 /**
- * 인피니트 스크롤링 함수
+ * 인피니트 스크롤링 Hook
  *
  * @param {object} param
- * @param {HTMLElement=} param.root
+ * @param {HTMLElement=} param.root 가시성을 확일할 때 사용되는 target의 조상 요소. null일땐, Browser의 Viewport
  * @param {import('react').RefObject} param.target 리랜더링 기준이 되는 DOM
  * @param {() => void} param.onInterSect 랜더링 콜백 함수
- * @param {number=} param.threshold
- * @param {string=} param.rootMargin
- * @param {number=} param.page
+ * @param {number=} param.threshold target이 root와 교차되는 비율
+ * @param {string=} param.rootMargin root가 가진 여백
  */
 export const useInfinityScroll = ({
-  root = null, // null일 땐, Browser Viewport
+  root = null,
   target,
-  onInterSect, // 콜백
-  threshold = 1.0, // target이 완전히 다 보일 때
+  onInterSect,
+  threshold = 1.0, // 완전히 교차되어야 함
   rootMargin = '0px',
 }) => {
   useEffect(() => {
